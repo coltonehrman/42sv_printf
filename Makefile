@@ -3,9 +3,11 @@ CC = gcc
 CFLAGS = -Wall -Wextra -Werror
 CFILES = ft_printf.c
 OBJFILES = ft_printf.o
+LIBFT = libft/libft.a
 
 $(NAME): $(OBJFILES)
-	ar rcs $(NAME) $(OBJFILES)
+	make -C libft
+	ar rcs $(NAME) $(OBJFILES) libft/*.o
 	ranlib $(NAME)
 
 .PHONY: all
@@ -13,10 +15,14 @@ $(NAME): $(OBJFILES)
 all: $(NAME)
 
 clean:
+	make clean -C libft
 	rm -f $(OBJFILES)
 
 fclean: clean
-	rm -f $(NAME)
+	make fclean -C libft
+	rm -f $(NAME) debug
+
+re: fclean all
 
 debug: all
-	$(CC) $(NAME) main.c -o debug
+	$(CC) -g $(CFILES) main.c $(LIBFT) -o debug
